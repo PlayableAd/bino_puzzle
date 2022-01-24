@@ -1,0 +1,125 @@
+<!--
+CandyCrush
+Your Name: Dieu Do  
+Collaborators: None
+-->
+<!DOCTYPE html>
+<html>
+<!--
+/* Copyright (c) 2017 MIT 6.813/6.831 course staff, all rights reserved.
+ * Redistribution of original or derived work requires permission of course staff.
+ */
+-->
+
+<head>
+  <meta charset="utf-8">
+  <title>CandyCrush</title>
+
+  <!-- Load style sheets -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.css">
+
+  <link rel="stylesheet" href="mainLayout.css">
+  <link rel="stylesheet" href="animation.css">
+
+  <!-- Use mobile-aware viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Load any supplemental Javascript libraries here -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.js">
+  </script>
+  <script src="candy.js"></script>
+  <script src="board.js"></script>
+  <script src="rules.js"></script>
+  <script src="table.js"></script>
+  <script src="main.js"></script>
+  <script src="animation.js"></script>
+
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 d-flex flex-column align-self-center" id="firstColumn">
+        <div class="p-2">
+          <h2 class="text-center"><b>Candy Crush</b></h2>
+        </div>
+        <div class="p-2 text-center" id='score'>
+          <h3>Score</h3>
+        </div>
+        <div class="p-2 text-center"><button class="btn newGameBtn" id="newGame">New Game</button></div>
+        <div id="animation"></div>
+      </div>
+
+      <div class="col-md-6 d-flex flex-column mx-auto align-self-center" id="mainColumn" style='position:relative'>
+
+        <script language="javascript"> rules.prepareNewGame();</script>
+        <!-- <canvas class ="d-flex-column mx-auto align-self-center" id ='Canvas' width='320' height='320' style ='border:2px solid #d3d3d3; width:320px;height:320px; z-index:-1;' > -->
+        <canvas class="d-flex-column align-self-center" id='Canvas' width='320' height='320'
+          style:'z-index:-1;position:absolute;'>
+          Sorry browser doesn't support Canvas
+          <img id='blue-candy' src='./graphics/blue-candy.png'>
+          <img id='green-candy' src='./graphics/green-candy.png'>
+          <img id='orange-candy' src='./graphics/orange-candy.png'>
+          <img id='red-candy' src='./graphics/red-candy.png'>
+          <img id='purple-candy' src='./graphics/purple-candy.png'>
+          <img id='yellow-candy' src='./graphics/yellow-candy.png'>
+          <img id='blue-special' src='./graphics/blue-special.png'>
+          <img id='green-special' src='./graphics/green-special.png'>
+          <img id='orange-special' src='./graphics/orange-special.png'>
+          <img id='red-special' src='./graphics/red-special.png'>
+          <img id='purple-special' src='./graphics/purple-special.png'>
+          <img id='bomb' src='./graphics/color-bomb.png'>
+
+          <canvas id='candyCanvas1' width='320' height='320' style='z-index:40;  position:absolute;'></canvas>
+
+          <canvas class="d-flex-column align-self-center" id='candyCanvas2' width='320' height='320'
+            style='z-index:80'></canvas>
+
+        </canvas>
+        <script>drawBoard();</script>
+        <script language='javascript'>board.resetScore();</script>
+        <p class="mx-auto" id="invalid">Invalid Move!</p>
+
+        <!-- <script> 
+        window.onload = function(){
+          var canvas = document.getElementById("Canvas");
+          var ctx = canvas.getContext("2d");
+          var img = document.getElementById("blue-candy");
+          ctx.drawImage(img,200,10);
+        }   
+      </script>  -->
+        <!-- <script type="text/javascript">$("#mainColumn").html(colorTable());</script> -->
+        <script type="text/javascript"> $("#mainColumn").html(drawBoard());</script>
+      </div>
+
+      <div class="col-md-3 d-flex flex-column align-self-center" id="lastColumn">
+        <div class="p-2 text-center">
+          <h2 class="">Move:</h2>
+          <input type="text" id="inputBox">
+        </div>
+
+        <div class="p-2 text-center modP">
+          <button class="btn btnColor" id="up" disabled>&uarr;</button>
+        </div>
+
+        <div class="p-2 text-center modP">
+          <button class="btn btnColor" id="left" style="margin-right: 20px;" disabled>&larr;</button>
+          <button class="btn btnColor" id="right" style="margin-left: 20px;" disabled>&rarr;</button>
+        </div>
+
+        <div class="p-2 text-center modP">
+          <button class="btn btnColor" id="down" disabled>&darr;</button>
+        </div>
+        <div class="p-2 text-center">
+          <button class="btn btnColor" id="crusher" disabled style='display: none'>Crush Once</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+
+</html>
