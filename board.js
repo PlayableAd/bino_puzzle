@@ -19,8 +19,7 @@
  * "remove", "move", and "scoreUpdate". 
  */
 
-var Board = function(size)
-{
+var Board = function (size) {
   // A unique ID for each candy.
   var candyCounter = 0;
 
@@ -34,8 +33,7 @@ var Board = function(size)
   // square[row][col] is the candy in that square, or null if square is empty
   this.square = new Array(this.boardSize);
   // make an empty candyboard
-  for (var i = 0; i <= this.boardSize; i++)
-  {
+  for (var i = 0; i <= this.boardSize; i++) {
     this.square[i] = [];
   }
 
@@ -43,19 +41,17 @@ var Board = function(size)
    * Returns true/false depending on whether row and column
    * identify a valid square on the board.
    */
-  this.isValidLocation = function(row, col)
-  {
+  this.isValidLocation = function (row, col) {
     return (row >= 0 && col >= 0 &&
-            row <= this.boardSize && col <= this.boardSize &&
-            row == Math.round(row) && col == Math.round(col));
+      row <= this.boardSize && col <= this.boardSize &&
+      row == Math.round(row) && col == Math.round(col));
   }
 
   /*
    * Returns true/false depending on whether the
    * square at [row,col] is empty (does not contain a candy).
    */
-  this.isEmptyLocation = function(row, col)
-  {
+  this.isEmptyLocation = function (row, col) {
     if (this.getCandyAt(row, col)) {
       return false;
     }
@@ -70,18 +66,17 @@ var Board = function(size)
   * Perform an a valid move automatically on the board. Flips the 
   * appropriate candies, but does not crush the candies. 
   */
-  this.doAutoMove = function() {
+  this.doAutoMove = function () {
     var move = rules.getRandomValidMove();
     var toCandy = board.getCandyInDirection(move.candy, move.direction);
-    this.flipCandies(move.candy,toCandy);
+    this.flipCandies(move.candy, toCandy);
   }
 
 
   /*
    * Returns the number of squares on each side of the board
    */
-  this.getSize = function()
-  {
+  this.getSize = function () {
     return this.boardSize;
   }
 
@@ -89,10 +84,8 @@ var Board = function(size)
    * Get the candy found on the square at [row,column], or null
    * if the square is empty.  Requires row,column < size.
    */
-  this.getCandyAt = function(row, col)
-  {
-    if (this.isValidLocation(row,col))
-    {
+  this.getCandyAt = function (row, col) {
+    if (this.isValidLocation(row, col)) {
       return this.square[row][col];
     }
   }
@@ -101,19 +94,19 @@ var Board = function(size)
    * Get location of candy (row and column) if it's found on this
    * board, or null if not found.
    */
-  this.getLocationOf  = function(candy){
-    return {row:candy.row, col:candy.col};
+  this.getLocationOf = function (candy) {
+    return { row: candy.row, col: candy.col };
   }
 
   /**
    * Get a list of all candies on the board, in no particular order.
    */
-  this.getAllCandies = function(){
+  this.getAllCandies = function () {
     var results = [];
     for (var r in this.square) {
       for (var c in this.square[r]) {
         if (this.square[r][c]) {
-         results.push(this.square[r][c]);
+          results.push(this.square[r][c]);
         }
       }
     }
@@ -131,10 +124,8 @@ var Board = function(size)
   * which may be off the board, is added to the 'add' event and
   * can be used to animate new candies that are coming in from offscreen.
   */
-  this.add = function(candy, row, col, spawnRow, spawnCol)
-  {
-    if (this.isEmptyLocation(row, col))
-    {
+  this.add = function (candy, row, col, spawnRow, spawnCol) {
+    if (this.isEmptyLocation(row, col)) {
       var details = {
         candy: candy,
         toRow: row,
@@ -150,8 +141,7 @@ var Board = function(size)
 
       $(this).triggerHandler("add", details);
     }
-    else
-    {
+    else {
       console.log("add already found a candy at " + row + "," + col);
     }
   }
@@ -161,16 +151,15 @@ var Board = function(size)
   * Requires candy to be already found on this board, and (toRow,toCol)
   * must denote a valid empty square.
   */
-  this.moveTo = function(candy, toRow, toCol)
-  {
-    if (this.isEmptyLocation(toRow,toCol))
-    {
+  this.moveTo = function (candy, toRow, toCol) {
+    if (this.isEmptyLocation(toRow, toCol)) {
       var details = {
-        candy:candy,
-        toRow:toRow,
-        toCol:toCol,
-        fromRow:candy.row,
-        fromCol:candy.col};
+        candy: candy,
+        toRow: toRow,
+        toCol: toCol,
+        fromRow: candy.row,
+        fromCol: candy.col
+      };
 
       delete this.square[candy.row][candy.col];
       this.square[toRow][toCol] = candy;
@@ -186,8 +175,7 @@ var Board = function(size)
   * Remove a candy from this board.
   * Requires candy to be found on this board.
   */
-  this.remove = function(candy)
-  {
+  this.remove = function (candy) {
     var details = {
       candy: candy,
       fromRow: candy.row,
@@ -203,14 +191,11 @@ var Board = function(size)
   * Remove a candy at a given location from this board.
   * Requires candy to be found on this board.
   */
-  this.removeAt = function(row, col)
-  {
-    if (this.isEmptyLocation(row, col))
-    {
+  this.removeAt = function (row, col) {
+    if (this.isEmptyLocation(row, col)) {
       console.log("removeAt found no candy at " + r + "," + c);
     }
-    else
-    {
+    else {
       this.remove(this.square[row][col]);
     }
   }
@@ -219,13 +204,10 @@ var Board = function(size)
   /**
   * Remove all candies from board.
   */
-  this.clear = function() {
-    for (var r in this.square)
-    {
-      for (var c in this.square[r])
-      {
-        if (this.square[r][c])
-        {
+  this.clear = function () {
+    for (var r in this.square) {
+      for (var c in this.square[r]) {
+        if (this.square[r][c]) {
           this.removeAt(r, c);
         }
       }
@@ -240,8 +222,7 @@ var Board = function(size)
   /*
   Adds a candy of specified color to row, col. 
   */
-  this.addCandy = function(color, row, col, spawnRow, spawnCol)
-  {
+  this.addCandy = function (color, row, col, spawnRow, spawnCol) {
     var candy = new Candy(color, candyCounter++);
     this.add(candy, row, col, spawnRow, spawnCol);
   }
@@ -249,8 +230,7 @@ var Board = function(size)
   /**
   * Adds a candy of random color at row, col.
   */
-  this.addRandomCandy = function(row, col, spawnRow, spawnCol)
-  {
+  this.addRandomCandy = function (row, col, spawnRow, spawnCol) {
     var random_color = Math.floor(Math.random() * Candy.colors.length);
     var candy = new Candy(Candy.colors[random_color], candyCounter++);
     this.add(candy, row, col, spawnRow, spawnCol);
@@ -260,21 +240,19 @@ var Board = function(size)
   Returns the candy immediately in the direction specified by direction
   ['up', 'down', 'left', 'right'] from the candy passed as fromCandy
   */
-  this.getCandyInDirection = function(fromCandy, direction)
-  {
-    switch(direction)
-    {
-      case "up":  {
-        return this.getCandyAt(fromCandy.row-1, fromCandy.col);
+  this.getCandyInDirection = function (fromCandy, direction) {
+    switch (direction) {
+      case "up": {
+        return this.getCandyAt(fromCandy.row - 1, fromCandy.col);
       }
       case "down": {
-        return this.getCandyAt(fromCandy.row+1, fromCandy.col);
+        return this.getCandyAt(fromCandy.row + 1, fromCandy.col);
       }
       case "left": {
-        return this.getCandyAt(fromCandy.row, fromCandy.col-1);
+        return this.getCandyAt(fromCandy.row, fromCandy.col - 1);
       }
       case "right": {
-        return this.getCandyAt(fromCandy.row, fromCandy.col+1);
+        return this.getCandyAt(fromCandy.row, fromCandy.col + 1);
       }
     }
   }
@@ -283,8 +261,7 @@ var Board = function(size)
   /* Flip candy1 with candy2 in one step, firing two move events.
    * Does not verify the validity of the flip. Does not crush candies
    * produced by flip. */
-  this.flipCandies = function(candy1, candy2)
-  {
+  this.flipCandies = function (candy1, candy2) {
     // Swap the two candies simultaneously.
     var details1 = {
       candy: candy1,
@@ -315,15 +292,15 @@ var Board = function(size)
   /*
   * Resets the score
   */
-  this.resetScore = function() {
+  this.resetScore = function () {
     this.score = 0;
-    $(this).triggerHandler("scoreUpdate", [{score: 0}]);
+    $(this).triggerHandler("scoreUpdate", [{ score: 0 }]);
   }
 
   /*
    * Adds some score.
    */
-  this.incrementScore = function(candy, row, col) {
+  this.incrementScore = function (candy, row, col) {
     this.score += 1;
     // console.log(this.score);
 
@@ -338,7 +315,7 @@ var Board = function(size)
   /*
    * Gets the current score
    */
-  this.getScore = function() {
+  this.getScore = function () {
     return this.score
   }
 
@@ -347,16 +324,15 @@ var Board = function(size)
   /**
    * Get a string representation for the board as a multiline matrix.
    */
-  this.toString = function()
-  {
+  this.toString = function () {
     var result = "";
     for (var r = 0; r < this.boardSize; ++r) {
       for (var c = 0; c < this.boardSize; ++c) {
         var candy = this.square[r][c];
         if (candy) {
-         result += candy.toString().charAt(0) + " ";
-        }else {
-         result += "_ ";
+          result += candy.toString().charAt(0) + " ";
+        } else {
+          result += "_ ";
         }
       }
       result += "<br/>";

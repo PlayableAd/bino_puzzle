@@ -4,7 +4,7 @@
 // number generator. This makes testing (and grading!) easier!
 Math.seedrandom(0);
 
-
+let backgroundSound = false;
 // A short jQuery extension to read query parameters from the URL.
 $.extend({
     getUrlVars: function () {
@@ -82,10 +82,11 @@ $(board).on('remove', function (e, info) {
 });
 
 // move a candy on the board
-$(board).on('scoreUpdate', function (e, info) {
-    // Your code here. To be implemented in pset 2.
-    $("#score").html(board.getScore());
-});
+// $(board).on('scoreUpdate', function (e, info) {
+//     // Your code here. To be implemented in pset 2.
+//     $("#score").html(board.getScore());
+//     console.log(board.getScore());
+// });
 
 // keyboard events arrive here
 $(document).on('keydown', function (evt) {
@@ -218,6 +219,7 @@ function checkMove(dir) {
     ctxt = canvas.getContext('2d');
 
     var candyTo = board.getCandyInDirection(currCandy, dir);
+
     var size = (320 / board.getSize());
 
     var clearWidth, clearHeight;
@@ -461,11 +463,17 @@ function drawCandy(row, col, size, color) {
 
 function getCanvasPos(evt) {
     var canvasRect = document.getElementById('Canvas').getBoundingClientRect();
-
     //Get relative position on canvas
-    var xPos = (evt.clientX - canvasRect.left);
-    var yPos = (evt.clientY - canvasRect.top);
+    var xPos, yPos;
+    if (evt.type == 'touchstart' || evt.type == 'touchmove' || evt.type == 'touchend' || evt.type == 'touchcancel') {
+        var touch = evt.originalEvent.touches[0] || evt.originalEvent.changedTouches[0];
+        xPos = (touch.clientX - canvasRect.left);
+        yPos = (touch.clientY - canvasRect.top);
+    } else if (evt.type == 'mousedown' || evt.type == 'mouseup' || evt.type == 'mousemove' || evt.type == 'mouseover' || evt.type == 'mouseout' || evt.type == 'mouseenter' || e.type == 'mouseleave') {
+        xPos = (evt.clientX - canvasRect.left);
+        yPos = (evt.clientY - canvasRect.top);
 
+    }
     //Get coordinate
     var size = 320 / BOARD_SIZE;
     yPos = Math.floor((yPos / size)) + 1;
@@ -475,6 +483,34 @@ function getCanvasPos(evt) {
     // console.log({ col: xPos, row: yPos});
     return xPos + yPos;
 }
+// ------------mobile
+$(document).on('touchstart', '#Canvas', function (evt) {
+    console.log('touchstart');
+    mouseDownLocation = getCanvasPos(evt);
+    console.log('touchstart: ' + mouseDownLocation);
+
+    document.getElementById('inputBox').value = mouseDownLocation;
+});
+
+$(document).on('touchend', '#Canvas', function (evt) {
+    console.log('touchend');
+    mouseUpLocation = getCanvasPos(evt);
+    console.log('mouseUp: ' + mouseUpLocation);
+    clearMoves();
+    $("#mainColumn").html(drawBoard());
+
+    checkDrag();
+});
+
+$(document).on('touchmove', '#Canvas', function (evt) {
+    console.log('touchmove');
+});
+
+$(document).on('mouseout', '#Canvas', function (evt) {
+    console.log('mouseout');
+});
+
+// ------------PC
 
 $(document).on('mousedown', '#Canvas', function (evt) {
     console.log('mousedown');
@@ -501,8 +537,6 @@ $(document).on('mousemove', '#Canvas', function (evt) {
 $(document).on('mouseout', '#Canvas', function (evt) {
     console.log('mouseout');
 });
-
-
 // $(document).on('click', "#Canvas", function(evt) {
 //   var location = getCanvasPos(evt);
 //   // console.log(location);
@@ -629,28 +663,28 @@ function drawBoard() {
                 case 'style=background-color:red':
                     // ctx.globalAlpha = .5;
                     ctx.drawImage(document.getElementById('red-candy'), col * size, row * size, candyWidth, candyHeight);
-                    ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
+                    // ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
                     // ctx.globalAlpha = 1.0;
                     break;
                 case 'style=background-color:green':
                     ctx.drawImage(document.getElementById('green-candy'), col * size, row * size, candyWidth, candyHeight);
-                    ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
+                    // ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
                     break;
                 case 'style=background-color:blue':
                     ctx.drawImage(document.getElementById('blue-candy'), col * size, row * size, candyWidth, candyHeight);
-                    ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
+                    // ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
                     break;
                 case 'style=background-color:orange':
                     ctx.drawImage(document.getElementById('orange-candy'), col * size, row * size, candyWidth, candyHeight);
-                    ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
+                    // ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
                     break;
                 case 'style=background-color:purple':
                     ctx.drawImage(document.getElementById('purple-candy'), col * size, row * size, candyWidth, candyHeight);
-                    ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
+                    // ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
                     break;
                 case 'style=background-color:yellow':
                     ctx.drawImage(document.getElementById('yellow-candy'), col * size, row * size, candyWidth, candyHeight);
-                    ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
+                    // ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
                     break;
             }
             // ctx.drawImage(document.getElementById('green-candy'), row, col, (320/8), (320/8));
@@ -663,7 +697,7 @@ function drawBoard() {
 }
 
 window.addEventListener('resize', (e) => {
-    console.dir(window.innerHeight);
+    console.log(window.innerWidth, window.innerHeight);
     if (window.innerWidth < window.innerHeight) {
         document.body.style.alignItems = "flex-start"
     } else {
@@ -671,3 +705,19 @@ window.addEventListener('resize', (e) => {
 
     }
 })
+const handleBackgroundSound = () => {
+    // const audioTag = document.createElement('audio');
+    // const source = document.createElement('source');
+    // audioTag.setAttribute('autoplay', true);
+    // source.setAttribute('src', backgroundSoundB64)
+    // source.setAttribute('type', 'audio/mpeg')
+    // audioTag.appendChild(source)
+    // document.querySelector('.container').appendChild(audioTag)
+    // backgroundSound = true;
+    // window.removeEventListener('touchstart', handleBackgroundSound)
+}
+// let a = document.getElementById('backgroundSound')
+// console.log(a)
+if (backgroundSound == false) {
+    // window.addEventListener('touchstart', handleBackgroundSound)
+}
