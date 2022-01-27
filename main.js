@@ -706,18 +706,20 @@ window.addEventListener('resize', (e) => {
     }
 })
 const handleBackgroundSound = () => {
-    // const audioTag = document.createElement('audio');
-    // const source = document.createElement('source');
-    // audioTag.setAttribute('autoplay', true);
-    // source.setAttribute('src', backgroundSoundB64)
-    // source.setAttribute('type', 'audio/mpeg')
-    // audioTag.appendChild(source)
-    // document.querySelector('.container').appendChild(audioTag)
-    // backgroundSound = true;
-    // window.removeEventListener('touchstart', handleBackgroundSound)
+    const audioTag = document.createElement('audio');
+    const source = document.createElement('source');
+    audioTag.setAttribute('id', 'backgroundSound');
+    audioTag.setAttribute('muted', 'true');
+    
+    source.setAttribute('src', backgroundSoundB64)
+    source.setAttribute('type', 'audio/mpeg')
+    audioTag.appendChild(source)
+    document.querySelector('.container').appendChild(audioTag)
+    let a = document.getElementById('backgroundSound')
+    a.play()
+    document.querySelector(".tutorial").remove();
+    backgroundSound = true;
 }
-// let a = document.getElementById('backgroundSound')
-// console.log(a)
 if (backgroundSound == false) {
-    // window.addEventListener('touchstart', handleBackgroundSound)
+    document.querySelector(".wrapper-content").addEventListener('touchstart', handleBackgroundSound)
 }
