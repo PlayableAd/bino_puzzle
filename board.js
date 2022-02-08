@@ -1,23 +1,3 @@
-/* Copyright (c) 2017 MIT 6.813/6.831 course staff, all rights reserved.
- * Redistribution of original or derived work requires permission of course staff.
- */
-
-/**
- * Board represents the state of the candy-board. A candy-board is a square
- * array of squares. The candy-board can be any size.
- *
- * Each square of the candy-board contains exactly one candy.
- * Each square is identified by its row and column, numbered from 0 to
- * size-1.  Square [0,0] is in the upper-left corner of the candy-board.
- * Rows are numbered downward, and columns are numbered to the right.
- * The candy type on each square is random.
- * 
- * Candies are mutable: a candy can be added, removed, and moved.
- * (The size of a board is immutable, however.)
- * 
- * The board broadcasts four event types: "add",
- * "remove", "move", and "scoreUpdate". 
- */
 
 var Board = function (size) {
   // A unique ID for each candy.
