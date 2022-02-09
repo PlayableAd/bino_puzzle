@@ -215,6 +215,7 @@ function avaliableMove(dir) {
 /* Add basic behaivor to gameplay
  * because this game is stupid
  */
+
 function checkMove(dir) {
     // var inputCol = col_array.indexOf(inputBoxInfo.charAt(0));
     // var inputRow;
@@ -337,6 +338,7 @@ function checkMove(dir) {
             }
         }, 10);
     }
+
 }
 
 function flipAndDraw(currCandy, dir) {
@@ -377,14 +379,14 @@ function crushcrush() {
     var canvas = document.getElementById("Canvas");
     var cxt = canvas.getContext("2d");
     var size = 320 / board.getSize();
-    var alphaCounter = 10;
+    var alphaCounter = 7;
     if (listRemove.length != 0) {
         var numCrush = listRemove.length;
         var crushLength = listRemove[0].length;
 
         var alpha = setInterval(function () {
             alphaCounter = alphaCounter - 1;
-            cxt.globalAlpha = alphaCounter / 10;
+            cxt.globalAlpha = alphaCounter / 7;
             // console.log(alphaCounter/10);
             for (var i = 0; i < numCrush; i++) {
                 for (var j = 0; j < crushLength; j++) {
@@ -435,6 +437,10 @@ function crushcrush() {
             globalCrushCounter = true;
         }
     }, 550);
+    setTimeout(() => {
+        let matchSound = document.getElementById("matchSound");
+        matchSound.play();
+    }, 400);
 }
 function getAllCandy(crushList) {
     var candies = [];
@@ -468,35 +474,6 @@ function changeColor(candy) {
             document.getElementById("score").style.backgroundColor = "yellow";
             break;
     }
-}
-
-function drawCandy(row, col, size, color) {
-    // switch (color) {
-    //     case 'red':
-    //         ctx.drawImage(document.getElementById('red-candy'), col * size, row * size, candyWidth, candyHeight);
-    //         ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
-    //         break;
-    //     case 'green':
-    //         ctx.drawImage(document.getElementById('green-candy'), col * size, row * size, candyWidth, candyHeight);
-    //         ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
-    //         break;
-    //     case 'blue':
-    //         ctx.drawImage(document.getElementById('blue-candy'), col * size, row * size, candyWidth, candyHeight);
-    //         ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
-    //         break;
-    //     case 'orange':
-    //         ctx.drawImage(document.getElementById('orange-candy'), col * size, row * size, candyWidth, candyHeight);
-    //         ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
-    //         break;
-    //     case 'purple':
-    //         ctx.drawImage(document.getElementById('purple-candy'), col * size, row * size, candyWidth, candyHeight);
-    //         ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
-    //         break;
-    //     case 'yellow':
-    //         ctx.drawImage(document.getElementById('yellow-candy'), col * size, row * size, candyWidth, candyHeight);
-    //         ctx.strokeRect(col * size, row * size, candyWidth, candyHeight);
-    //         break;
-    // }
 }
 
 function getCanvasPos(evt) {
@@ -588,14 +565,6 @@ $(document).on("mousemove", "#Canvas", function (evt) {
 $(document).on("mouseout", "#Canvas", function (evt) {
     console.log("mouseout");
 });
-// $(document).on('click', "#Canvas", function(evt) {
-//   var location = getCanvasPos(evt);
-//   // console.log(location);
-//   clearMoves();
-//   $("#mainColumn").html(drawBoard());
-//   document.getElementById('inputBox').value = location;
-//   checkInput(); //Once click it will check for possible moves
-// });
 
 function checkDrag() {
     var originCol = col_array.indexOf(mouseDownLocation.charAt(0));
@@ -603,12 +572,7 @@ function checkDrag() {
     var spliceSize = BOARD_SIZE > 9 ? 2 : 1;
     var originRow = mouseDownLocation.substr(1, spliceSize);
     var destRow = mouseUpLocation.substr(1, spliceSize);
-    // console.log(originRow);
-    // console.log(destRow);
-    // console.log(mouseDownLocation);
-    // console.log(mouseUpLocation);
-    // console.log(originCol);
-    // console.log(destCol);
+
     if (originCol == destCol) {
         //moving up or down
         if (originRow < destRow) {
@@ -769,7 +733,20 @@ function drawBoard() {
     cntxt = canvas2.getContext("2d");
     cntxt.fillRect(0, 0, 200, 200);
 }
+//customize the game
+const addMathSound = () => {
 
+    const audioTag = document.createElement("audio");
+    const source = document.createElement("source");
+    audioTag.setAttribute("id", "matchSound");
+    audioTag.setAttribute("muted", "true");
+
+    source.setAttribute("src", matchSoundB64);
+    source.setAttribute("type", "audio/mpeg");
+    audioTag.appendChild(source);
+    document.querySelector(".container").appendChild(audioTag);
+}
+addMathSound();
 window.addEventListener("resize", (e) => {
     console.log(window.innerWidth, window.innerHeight);
     if (window.innerWidth < window.innerHeight) {
@@ -779,7 +756,20 @@ window.addEventListener("resize", (e) => {
     }
 });
 
-// add bg sound
+let device = "desktop";
+const checkDeviceType = () => {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        device = "tablet";
+    }
+    else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+        device = "mobile";
+    }
+    device = "desktop";
+    console.log(device);
+};
+checkDeviceType();
+
 const handleBackgroundSound = () => {
     const audioTag = document.createElement("audio");
     const source = document.createElement("source");
@@ -807,63 +797,125 @@ const handleBackgroundSound = () => {
     //turn off tutorial
     document
         .querySelector(".tutorial")
-        .removeEventListener("touchstart", handleBackgroundSound, false);
+        .removeEventListener("click", handleBackgroundSound, false);
     document.querySelector(".tutorial").style.display = "none";
 };
-if (backgroundSound === false) {
-    document
-        .querySelector(".tutorial")
-        .addEventListener("touchstart", handleBackgroundSound);
-}
 
-$(board).on("scoreUpdate", function (e, info) {
-    let score = board.getScore();
-
-    //handle cage
-    const pullUpLocation = (score / 30 || 0) * 100 * 2.5;
-    document.querySelector(".cage-door").style.bottom = `${pullUpLocation - 30
-        }px`;
-    if (pullUpLocation - 30 >= 245) {
-        document.querySelector(
-            "#char-animation"
-        ).style.backgroundImage = `url(${charHappyB64})`;
-        document.querySelector("#char-animation").style.width = `170px`;
-    }
-
-    //handle win game.
-    if (score >= scoreWin) {
-        //offbgsound
-        let bgSound = document.getElementById("backgroundSound");
-        bgSound.pause();
-        bgSoundcurrentTime = 0;
-
-        //play wwin sound
-        const audioTag = document.createElement("audio");
-        const source = document.createElement("source");
-        audioTag.setAttribute("id", "winSound");
-        audioTag.setAttribute("muted", "true");
-
-        source.setAttribute("src", winSoundB64);
-        source.setAttribute("type", "audio/mpeg");
-        audioTag.appendChild(source);
-        document.querySelector(".container").appendChild(audioTag);
-
-        let winSound = document.getElementById("winSound");
-        winSound.play();
-
-        //show cta
-        document.querySelector(".text-tutorial").textContent =
-            "TAP TO CONTINUE";
-        document.querySelector(".hand-animation").style.display = "none";
-        document.querySelector(".tutorial").style.display = "block";
-        playConfetti();
+if (device === "desktop") {
+    if (backgroundSound === false) {
         document
             .querySelector(".tutorial")
-            .addEventListener("touchstart", () => {
-                console.log("GOTOSTORE");
-            });
+            .addEventListener("click", handleBackgroundSound);
     }
-});
+
+    let once = true;
+    $(board).on("scoreUpdate", function (e, info) {
+        let score = board.getScore();
+
+        //handle cage
+        const pullUpLocation = (score / 30 || 0) * 100 * 2.5;
+        document.querySelector(".cage-door").style.bottom = `${pullUpLocation - 30
+            }px`;
+
+        //handle win game.
+        if (score >= scoreWin && once) {
+            once = false;
+            document.querySelector(
+                "#char-animation"
+            ).style.backgroundImage = `url(${charHappyB64})`;
+            document.querySelector("#char-animation").style.width = `170px`;
+
+            //offbgsound
+            let bgSound = document.getElementById("backgroundSound");
+            bgSound.pause();
+            bgSoundcurrentTime = 0;
+
+            //play wwin sound
+            const audioTag = document.createElement("audio");
+            const source = document.createElement("source");
+            audioTag.setAttribute("id", "winSound");
+            // audioTag.setAttribute("muted", "true");
+
+            source.setAttribute("src", winSoundB64);
+            source.setAttribute("type", "audio/mpeg");
+            audioTag.appendChild(source);
+            document.querySelector(".container").appendChild(audioTag);
+
+            let winSound = document.getElementById("winSound");
+            winSound.play();
+
+            //show cta
+            document.querySelector(".text-tutorial").textContent =
+                "TAP TO CONTINUE";
+            document.querySelector(".hand-animation").style.display = "none";
+            document.querySelector(".tutorial").style.display = "block";
+            playConfetti();
+            document
+                .querySelector(".tutorial")
+                .addEventListener("click", () => {
+                    console.log("GOTOSTORE");
+                });
+        }
+    });
+} else {
+
+    if (backgroundSound === false) {
+        document
+            .querySelector(".tutorial")
+            .addEventListener("touchstart", handleBackgroundSound);
+    }
+
+    let once = true;
+    $(board).on("scoreUpdate", function (e, info) {
+        let score = board.getScore();
+
+        //handle cage
+        const pullUpLocation = (score / 30 || 0) * 100 * 2.5;
+        document.querySelector(".cage-door").style.bottom = `${pullUpLocation - 30
+            }px`;
+
+        //handle win game.
+        if (score >= scoreWin && once) {
+            once = false;
+            document.querySelector(
+                "#char-animation"
+            ).style.backgroundImage = `url(${charHappyB64})`;
+            document.querySelector("#char-animation").style.width = `170px`;
+
+            //offbgsound
+            let bgSound = document.getElementById("backgroundSound");
+            bgSound.pause();
+            bgSoundcurrentTime = 0;
+
+            //play wwin sound
+            const audioTag = document.createElement("audio");
+            const source = document.createElement("source");
+            audioTag.setAttribute("id", "winSound");
+            // audioTag.setAttribute("muted", "true");
+
+            source.setAttribute("src", winSoundB64);
+            source.setAttribute("type", "audio/mpeg");
+            audioTag.appendChild(source);
+            document.querySelector(".container").appendChild(audioTag);
+
+            let winSound = document.getElementById("winSound");
+            winSound.play();
+
+            //show cta
+            document.querySelector(".text-tutorial").textContent =
+                "TAP TO CONTINUE";
+            document.querySelector(".hand-animation").style.display = "none";
+            document.querySelector(".tutorial").style.display = "block";
+            playConfetti();
+            document
+                .querySelector(".tutorial")
+                .addEventListener("touchstart", () => {
+                    console.log("GOTOSTORE");
+                });
+        }
+    });
+}
+
 
 const playConfetti = () => {
     document.querySelector(".player-wrap").style.display = "block";
@@ -1014,19 +1066,13 @@ const playConfetti = () => {
     })();
 };
 
-var focused = true;
-
-window.onfocus = function () {
-    focused = true;
+document.addEventListener('visibilitychange', function () {
     let bgSound = document.getElementById("backgroundSound");
-    if (bgSound) {
+    if (document.hidden) {
+        bgSound.muted = true;
+        console.log('bye');
+    } else {
+        console.log('well back');
         bgSound.muted = false;
     }
-};
-window.onblur = function () {
-    focused = false;
-    let bgSound = document.getElementById("backgroundSound");
-    if (bgSound) {
-        bgSound.muted = true;
-    }
-};
+}, false);
